@@ -1,9 +1,7 @@
 import React from 'react'
-import Signup from './pages/Signup/Signup'
-import Login from './pages/Login/Login'
 import { BrowserRouter,Routes,Route } from 'react-router-dom'
-import SignupPage from './pages/Signup/SignupPage'
-import LoginPage from './pages/Login/LoginPage'
+import SignupPage from './pages/SignupPage/SignupPage'
+import LoginPage from './pages/LoginPage/LoginPage'
 
 export default function App() {
   return (
