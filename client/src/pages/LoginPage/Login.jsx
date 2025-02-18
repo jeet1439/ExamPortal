@@ -15,7 +15,7 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Login Data:", formData);
-    // Add your login logic here
+    // Have to add the logic here....
   };
 
   return (
@@ -53,7 +53,7 @@ const Login = () => {
           </button>
         </form>
         <p className="mt-4 text-center text-gray-700">
-          Don't have an account?<Link to='/signup' className="text-blue-500 hover:underline">Signup Now!</Link>
+          Don't have an account?<Link to='/signup' className="text-blue-500 hover:underline"> Signup Now!</Link>
         </p>
       </div>
     </div>
