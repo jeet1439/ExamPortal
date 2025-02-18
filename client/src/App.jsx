@@ -1,11 +1,15 @@
 import React from 'react'
+import Signup from './pages/Signup'
+import Login from './pages/Login'
+import { BrowserRouter,Routes,Route } from 'react-router-dom'
 
 export default function App() {
   return (
-    <div>
-      <div className="flex items-center justify-center h-screen bg-gray-200">
-      <h1 className="text-3xl font-bold text-blue-600">Hello, Team!</h1>
-    </div>
-    </div>
+    <BrowserRouter>
+    <Routes>
+      <Route path='/signup' element={<Signup/>}/>
+      <Route path='/login' element={<Login/>}/>
+    </Routes>
+    </BrowserRouter>
   )
 }
