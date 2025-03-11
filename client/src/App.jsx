@@ -1,14 +1,15 @@
 import React from 'react'
 import { BrowserRouter,Routes,Route } from 'react-router-dom'
-import SignupPage from './pages/SignupPage/SignupPage'
-import LoginPage from './pages/LoginPage/LoginPage'
-
+import Navbar from './components/Navbar.jsx';
+import Hero from './pages/Hero.jsx';
+import Rejister from './pages/Rejister.jsx';
 export default function App() {
   return (
     <BrowserRouter>
+    <Navbar/>
     <Routes>
-      <Route path='/signup' element={<SignupPage/>}/>
-      <Route path='/login' element={<LoginPage/>}/>
+      <Route path='/' element={<Hero/>}/>
+      <Route path='/signup' element={<Rejister/>}/>
     </Routes>
     </BrowserRouter>
   )
