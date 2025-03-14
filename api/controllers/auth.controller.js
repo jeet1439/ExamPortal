@@ -39,3 +39,7 @@ export const signup = async(req, res, next) => {
         next(error);
     }    
 }
+
+export const studentSignin = async (req, res, next) => {
+    
+}
