@@ -73,10 +73,10 @@ const Navbar = () => {
               Login
             </Link>
             <Link
-              to="/signup"
+              to="/rejister"
               className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-300"
             >
-              Signup
+              Rejister
             </Link>
           </div>
         </div>
@@ -111,10 +111,10 @@ const Navbar = () => {
               Login
             </Link>
             <Link
-              to="/signup"
+              to="/rejister"
               className="block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-300"
             >
-              Signup
+              Rejister
             </Link>
           </div>
         </div>

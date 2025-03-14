@@ -4,14 +4,17 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config();
 
+import authRoutes from './routes/auth.route.js'
+
 const app = express();
 const port = process.env.PORT || 8080;
+app.use(express.json());
+
+app.use('/api/auth', authRoutes );
 
 app.get('/', (req, res) => {
     res.send("hello");
 });
-
-// app.use('/api/auth', authRoutes);
 
 const start = async () => {
     try {

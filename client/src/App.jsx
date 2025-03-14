@@ -9,7 +9,7 @@ export default function App() {
     <Navbar/>
     <Routes>
       <Route path='/' element={<Hero/>}/>
-      <Route path='/signup' element={<Rejister/>}/>
+      <Route path='/rejister' element={<Rejister/>}/>
     </Routes>
     </BrowserRouter>
   )

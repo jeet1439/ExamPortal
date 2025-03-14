@@ -1,23 +1,41 @@
-import { User } from "../models/user.model.js";
+import User from '../models/user.modal.js';
+import bcryptjs from 'bcryptjs';
 
-export const signup = async (req, res) => {
-  const { email, password, name } = req.body;
+import dotenv from 'dotenv'
+dotenv.config();
 
-  try {
-    if(!email || !password || !name){
-      throw new Error('All fields are required');
+export const signup = async(req, res, next) => {
+    const { username, email, password, year, department, section, rollNo } = req.body;
+
+    if( !username || !email || !password || !year || !department || !section || !rollNo){
+        return res.status(400).json({ error: "All fields are required!" });
     }
-    const userAlreadyexist = await User.findOne({email});
-    if(userAlreadyexist){
-      return res.status(400).json({success: false, message: 'User Already exists'});
-    }
-  } catch (error) {
-    return res.status(400).json({success: false, message: error.message});
-  }
+
+    try {
+        const hashedPassword = bcryptjs.hashSync(password, 10);
+
+        const newUser = new User({
+            username,
+            email, 
+            password: hashedPassword, 
+            year, 
+            department, 
+            section, 
+            rollNo,
+            validId: {
+                url: '',
+                filename: ''
+            }
+        });
+        if(req.file){
+           newUser.validId = {
+            url: req.file.path,
+            filename: req.file.filename
+           }
+        }
+        await newUser.save();
+        res.status(201).json({ message: "Rejistration sent for validation!" });
+    } catch (error) {
+        next(error);
+    }    
 }
-export const login = async (req, res) => {
-    res.send('signin-route');
-  }
-export const logout = async (req, res) => {
-    res.send('signout-route');
-  }
