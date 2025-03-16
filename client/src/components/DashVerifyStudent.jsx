@@ -8,7 +8,6 @@ const DashVerifyStudent = () => {
     fetch("/api/admin/students/unverified")
       .then((res) => res.json())
       .then((data) => {
-        console.log("API Response:", data);
         setStudents(data);
       })
       .catch((err) => console.error("Error fetching students:", err));
