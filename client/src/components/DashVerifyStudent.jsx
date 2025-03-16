@@ -4,14 +4,14 @@ const DashVerifyStudent = () => {
   const [students, setStudents] = useState([]);
 
   // Fetch unverified students
-  useEffect(() => {
-    fetch("/api/admin/students/unverified")
-      .then((res) => res.json())
-      .then((data) => {
-        setStudents(data);
-      })
-      .catch((err) => console.error("Error fetching students:", err));
-  }, []);
+ useEffect(() => {
+    if (currentUser && currentUser.isAdmin) {
+      fetch("/api/admin/students/unverified")
+        .then((res) => res.json())
+        .then((data) => setStudents(data))
+        .catch((err) => console.error("Error fetching students:", err));
+    }
+  }, [currentUser]);
 
   // Approve student
   const handleApprove = (id) => {
