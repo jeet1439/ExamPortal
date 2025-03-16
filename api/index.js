@@ -4,7 +4,8 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config();
 
-import authRoutes from './routes/auth.route.js'
+import authRoutes from './routes/auth.route.js';
+import adminRoutes from './routes/admin.route.js';
 import cookieParser from 'cookie-parser';
 
 const app = express();
@@ -13,6 +14,7 @@ const port = process.env.PORT || 8080;
 app.use(express.json());
 app.use(cookieParser());
 app.use('/api/auth', authRoutes );
+app.use('/api/admin',adminRoutes);
 
 app.get('/', (req, res) => {
     res.send("hello");
