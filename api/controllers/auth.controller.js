@@ -36,7 +36,7 @@ export const signup = async(req, res, next) => {
            }
         }
         await newUser.save();
-        res.status(201).json({ message: "Rejistration sent for validation!" });
+        res.status(201).json({ message: "Registration sent for validation!" });
     } catch (error) {
         next(error);
     }    
