@@ -1,89 +1,107 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { signInStart, signInSuccess, signInFaliure } from '../redux/user/userSlice';
 
-const DashVerifyStudent = () => {
-  const [students, setStudents] = useState([]);
+export default function AdminLogin() {
+    const [formData, setFormdata] = useState({});
+    const [successMsg, setSuccessMsg] = useState('');
 
-  // Fetch unverified students
-  useEffect(() => {
-    fetch("/api/admin/students/unverified") // Adjust the URL based on your backend
-      .then((response) => response.json()) 
-      .then((data) => {
-        console.log("API Response:", data);
-        setStudents(data.students || []);  // Ensure 'students' is always an array
-      })
-      .catch((error) => console.error("Error fetching students:", error));
-  }, []);
+    const { loading, error: errorMessage } = useSelector(state => state.user);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-  // Approve student
-  const handleApprove = (id) => {
-    fetch(`/api/admin/students/approve/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" }
-    })
-      .then((response) => response.json())
-      .then(() => {
-        setStudents((prev) => prev.filter((student) => student._id !== id));
-      })
-      .catch((error) => console.error("Error approving student:", error));
-  };
+    const handleChange = (e) => {
+        setFormdata({ ...formData, [e.target.id]: e.target.value });
+    };
 
-  // Reject student
-  const handleReject = (id) => {
-    fetch(`/api/students/reject/${id}`, {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" }
-    })
-      .then((response) => response.json())
-      .then(() => {
-        setStudents((prev) => prev.filter((student) => student._id !== id));
-      })
-      .catch((error) => console.error("Error rejecting student:", error));
-  };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-  return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Verify Students</h2>
-      {students.length === 0 ? (
-        <p>No students pending verification.</p>
-      ) : (
-        <table className="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="border p-2">Name</th>
-              <th className="border p-2">Email</th>
-              <th className="border p-2">Id-Proof</th>
-              <th className="border p-2">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {students.map((student) => (
-              <tr key={student._id} className="text-center">
-                <td className="border p-2">{student.username}</td>
-                <td className="border p-2">{student.email}</td>
-                <td className="border p-2">
-                  <button>View</button>
-                </td>
-                <td className="border p-2">
-                  <button
-                    className="bg-green-500 text-white px-4 py-1 rounded mr-2"
-                    onClick={() => handleApprove(student._id)}
-                  >
-                    Approve
-                  </button>
-                  <button
-                    className="bg-red-500 text-white px-4 py-1 rounded"
-                    onClick={() => handleReject(student._id)}
-                  >
-                    Reject
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </div>
-  );
-};
+        if (!formData.email || !formData.password) {
+            return dispatch(signInFaliure('Please fill all the fields'));
+        }
+        try {
+            dispatch(signInStart());
+            const res = await fetch('/api/auth/signin-admin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData),
+            });
+            const data = await res.json();
+            if (res.ok) {
+                console.log('Signin successful: ', data);
+                dispatch(signInSuccess(data));
+                setSuccessMsg('Admin Login successful!');
+                setTimeout(() => {
+                    navigate('/dashboard');
+                }, 3000);
+            } else {
+                console.error('Sign in failed', data.message);
+                dispatch(signInFaliure(data.message));
+                setSuccessMsg('');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            setSuccessMsg('');
+            dispatch(signInFaliure(error.message));
+        }
+    };
 
-export default DashVerifyStudent;
+    return (
+        <div className='flex items-center justify-center min-h-screen bg-gray-100'>
+            <div className='w-full max-w-md p-6 bg-white shadow-lg rounded-lg'>
+                <h1 className='text-2xl font-semibold text-center text-gray-800 mb-6'>
+                    Admin Login
+                </h1>
+                <form className='space-y-4' onSubmit={handleSubmit}>
+                    <div>
+                        <label htmlFor='email' className='block text-sm font-medium text-gray-700'>
+                            Email address
+                        </label>
+                        <input
+                            type='email'
+                            id='email'
+                            className='w-full px-4 py-2 border rounded-lg focus:ring focus:ring-green-300'
+                            placeholder='Admin email'
+                            required
+                            autoComplete='email'
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor='password' className='block text-sm font-medium text-gray-700'>
+                            Password
+                        </label>
+                        <input
+                            type='password'
+                            id='password'
+                            className='w-full px-4 py-2 border rounded-lg focus:ring focus:ring-green-300'
+                            placeholder='******'
+                            required
+                            autoComplete='current-password'
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <button
+                        type='submit'
+                        disabled={loading}
+                        className='w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 disabled:bg-gray-400'
+                    >
+                        Sign in
+                    </button>
+                </form>
+                {successMsg && (
+                    <div className='mt-4 text-green-500 text-center'>
+                        {successMsg}
+                    </div>
+                )}
+                {errorMessage && (
+                    <div className='mt-4 text-red-500 text-center'>
+                        {errorMessage}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}
