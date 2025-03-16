@@ -33,6 +33,10 @@ export default function AdminLogin() {
                 console.log('Signin successful: ', data);
                 dispatch(signInSuccess(data));
                 setSuccessMsg('Admin Login successful!');
+                setTimeout(() => {
+                    navigate('/dashboard');
+                }, 5000);
+
             } else {
                 console.error('Sign in failed', data.message);
                 dispatch(signInFaliure(data.message));

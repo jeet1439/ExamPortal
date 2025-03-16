@@ -55,12 +55,12 @@ export const studentSignin = async (req, res, next) => {
         if(!validUser.isVerified){
             return res.status(403).json({ message: 'Status: Pending for verification' });
         }
-        const validPassword = bcryptjs.compareSync(password, validUser.password);
+        const validPassword = bcryptjs.compare(password, validUser.password);
         if(!validPassword){
             return res.status(401).json({ message: 'Wrong credentials!'})
         }
         const token = jwt.sign({ id: validUser._id, isAdmin: validUser.isAdmin }, process.env.JWT_SECRET);
-        const { password: pass, ...rest } = validUser._doc;
+        const { password: pass, ...rest } = validUser.toObject();
         res.status(200).cookie('access_token', token, {
             httpOnly: true,
             maxAge: 24 * 60 * 60 * 1000,
@@ -99,7 +99,6 @@ export const registerAdmin = async (req, res) => {
 
 export const adminLogin = async (req, res) => {
     const { email, password } = req.body;
-
     try {
         const user = await User.findOne({ email });
         if (!user) {
