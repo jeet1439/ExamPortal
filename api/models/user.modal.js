@@ -27,18 +27,15 @@ const userSchema = new mongoose.Schema(
         },
         year: {
             type: Number,
-            required: true,
             min: 1,
             max: 5,
         },
         department:{
             type: String,
-            required: true,
             enum: ["ME", "EE ", "CE ", "CSE", "ECE"]
         },
         section:{
             type: String,
-            required: true,
             enum: [ "A1", "A2", "B1", "B2" ],
         },
         isAdmin: {
@@ -51,7 +48,6 @@ const userSchema = new mongoose.Schema(
         },
         rollNo: {
             type: Number,
-            required: true,
         }
     }, { timestamps: true });
 

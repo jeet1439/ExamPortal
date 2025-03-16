@@ -1,8 +1,10 @@
 import User from '../models/user.modal.js';
 import bcryptjs from 'bcryptjs';
-
-import dotenv from 'dotenv'
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 dotenv.config();
+
+import { errorHandler } from '../utils/error.js';
 
 export const signup = async(req, res, next) => {
     const { username, email, password, year, department, section, rollNo } = req.body;
@@ -41,5 +43,87 @@ export const signup = async(req, res, next) => {
 }
 
 export const studentSignin = async (req, res, next) => {
-    
+    const { email, password } = req.body;
+    if(!email || !password || email === '' || password === ''){
+      return res.status(400).json({ message: 'All fields are required!'})
+    }
+    try {
+        const validUser = await User.findOne({ email });
+        if(!validUser){
+            return res.status(401).json({ message: 'Wrong credentials!'});
+        }
+        if(!validUser.isVerified){
+            return res.status(403).json({ message: 'Status: Pending for verification' });
+        }
+        const validPassword = bcryptjs.compareSync(password, validUser.password);
+        if(!validPassword){
+            return res.status(401).json({ message: 'Wrong credentials!'})
+        }
+        const token = jwt.sign({ id: validUser._id, isAdmin: validUser.isAdmin }, process.env.JWT_SECRET);
+        const { password: pass, ...rest } = validUser._doc;
+        res.status(200).cookie('access_token', token, {
+            httpOnly: true,
+            maxAge: 24 * 60 * 60 * 1000,
+        }).json(rest);
+    } catch (error) {
+        next(error);
+    }
 }
+
+export const registerAdmin = async (req, res) => {
+    const { username, email, password } = req.body;
+
+    try {
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: "Admin already exists" });
+        }
+
+        const salt = await bcryptjs.genSalt(10);
+        const hashedPassword = await bcryptjs.hash(password, salt);
+
+        const newAdmin = new User({
+            username,
+            email,
+            password: hashedPassword,
+        });
+
+        await newAdmin.save();
+
+        res.status(201).json({ message: "Admin registered successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error });
+    }
+};
+
+
+export const adminLogin = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (!user.isAdmin) {
+            return res.status(403).json({ message: "Access denied. Not an admin." });
+        }
+
+        const isMatch = await bcryptjs.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: "Invalid credentials" });
+        }
+
+        const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin },process.env.JWT_SECRET);
+        const { password: pass, ...rest } = user._doc;
+
+        res.status(200).cookie('access_token', token, {
+            httpOnly: true,
+            maxAge: 24 * 60 * 60 * 1000,
+        }).json(rest);
+
+    } catch (error) {
+        next(error);
+    }
+};

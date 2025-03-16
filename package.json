@@ -12,6 +12,7 @@
   "author": "jeet, spamdan, anik, sourav",
   "license": "ISC",
   "dependencies": {
+    "@reduxjs/toolkit": "^2.6.1",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.6.0",
     "cookie-parser": "^1.4.7",
@@ -22,6 +23,7 @@
     "mongoose": "^8.10.1",
     "multer": "^1.4.5-lts.1",
     "multer-storage-cloudinary": "^4.0.0",
-    "resend": "^4.1.2"
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.3.0"
   }
 }
