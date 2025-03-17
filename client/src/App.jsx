@@ -16,7 +16,7 @@ export default function App() {
     <Navbar/>
     <Routes>
       <Route path='/' element={<Hero/>}/>
-      <Route path='/rejister' element={<Rejister/>}/>
+      <Route path='/register' element={<Rejister/>}/>
       <Route path='/student-login' element={<StudentLogin/>}/>
       <Route path='/admin-login' element={<AdminLogin/>}/>
       <Route element={<PrivateRoute/>}>

@@ -6,7 +6,7 @@ import { storage } from '../cloud.config.js';
 
 const upload = multer({ storage });
 
-import { signup, studentSignin , registerAdmin, adminLogin } from '../controllers/auth.controller.js';
+import { signup, studentSignin , registerAdmin, adminLogin, signout } from '../controllers/auth.controller.js';
 
 router.route("/signup")
    .post(upload.single("validId"), signup);
@@ -19,6 +19,7 @@ router.route('/register-admin')
 
 router.route('/signin-admin')
        .post(adminLogin);      
-
-
+router.route('/signout')
+       .post(signout);
+       
 export default router;    
