@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+
 const DashVerifyStudent = () => {
   const [students, setStudents] = useState([]);
-  const { currentUser } = useSelector((state) => state.user);
+
   // Fetch unverified students
  useEffect(() => {
     if (currentUser && currentUser.isAdmin) {
@@ -68,13 +68,13 @@ const DashVerifyStudent = () => {
                     className="bg-green-500 text-white px-4 py-1 rounded mr-2"
                     onClick={() => handleApprove(student._id)}
                   >
-                    Approve
+                    Approve <i class="fa-solid fa-check"></i>
                   </button>
                   <button
                     className="bg-red-500 text-white px-4 py-1 rounded"
                     onClick={() => handleReject(student._id)}
                   >
-                    Reject
+                    Reject <i class="fa-solid fa-xmark"></i>
                   </button>
                 </td>
               </tr>
