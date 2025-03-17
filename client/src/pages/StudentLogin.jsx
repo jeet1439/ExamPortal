@@ -32,6 +32,7 @@ export default function StudentLogin() {
         if(res.ok){
             console.log('Signin successful: ', data);
             setSuccessMsg('Login successful!'); 
+            navigate('/student-dashboard');
             dispatch(signInSuccess(data));
         }
         if(!res.ok){

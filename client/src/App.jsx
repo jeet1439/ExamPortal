@@ -8,6 +8,7 @@ import AdminLogin from './pages/AdminLogin.jsx';
 import PrivateRoute from './components/PrivateRoute.jsx';
 import AdminPrivate from './components/AdminPrivate.jsx';
 import Dashboard from './pages/Dashboard.jsx';
+import StudentDashboard from './pages/StudentDashboard.jsx';
 
 export default function App() {
   return (
@@ -19,7 +20,7 @@ export default function App() {
       <Route path='/student-login' element={<StudentLogin/>}/>
       <Route path='/admin-login' element={<AdminLogin/>}/>
       <Route element={<PrivateRoute/>}>
-          {/* {all page which cant be accessed with login , client validation} */}
+          <Route path='/student-dashboard' element={<StudentDashboard/>}/>
       </Route>
        <Route element={<AdminPrivate/>}>
        <Route path='/dashboard' element={<Dashboard />} />

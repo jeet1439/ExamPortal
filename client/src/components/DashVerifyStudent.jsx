@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-
+import { useSelector } from "react-redux";
 const DashVerifyStudent = () => {
   const [students, setStudents] = useState([]);
-
+  const { currentUser } = useSelector((state) => state.user);
   // Fetch unverified students
  useEffect(() => {
     if (currentUser && currentUser.isAdmin) {
