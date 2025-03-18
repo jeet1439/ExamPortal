@@ -2,28 +2,30 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { signoutSuccess } from '../redux/user/userSlice.js';
+
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const handleLogout = async() => {
-    try{
-      const res = await fetch('/api/auth/signout',{
-       method: 'POST',
+  const handleLogout = async () => {
+    try {
+      const res = await fetch('/api/auth/signout', {
+        method: 'POST',
       });
       const data = await res.json();
-      if(!res.ok){
-       console.log(data.message);
-      }else{
-      dispatch(signoutSuccess());
+      if (!res.ok) {
+        console.log(data.message);
+      } else {
+        dispatch(signoutSuccess());
       }
-   }catch(error){
-     console.log(error.message);
-   }
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   return (
@@ -40,9 +42,20 @@ export default function Navbar() {
             <Link to="/" className="text-gray-700 hover:text-blue-600 font-medium">
               Home
             </Link>
-            <Link to="/exams" className="text-gray-700 hover:text-blue-600 font-medium">
-              Exams
-            </Link>
+            {currentUser ? (
+              currentUser.isAdmin ? (
+                <Link to="/dashboard" className="text-gray-700 hover:text-blue-600 font-medium">
+                  dashboard
+                </Link>
+              ) : (
+                <Link to="/student-dashboard" className="text-gray-700 hover:text-blue-600 font-medium">
+                  dashboard
+                </Link>
+              )
+            ) : (
+              ''
+            )}
+
             <Link to="/results" className="text-gray-700 hover:text-blue-600 font-medium">
               Results
             </Link>
@@ -68,8 +81,7 @@ export default function Navbar() {
                 </button>
                 {/* Profile Icon */}
                 <div
-                 className={`w-10 h-10 flex items-center justify-center text-white font-bold rounded-full ${
-                  currentUser.isAdmin ? 'bg-green-600' : 'bg-blue-600'}`}>
+                  className={`w-10 h-10 flex items-center justify-center text-white font-bold rounded-full ${currentUser.isAdmin ? 'bg-green-600' : 'bg-blue-600'}`}>
                   {currentUser.username.charAt(0).toUpperCase()}
                 </div>
               </div>
@@ -126,11 +138,10 @@ export default function Navbar() {
                   Logout
                 </button>
                 <div className="flex items-center space-x-3 mt-3">
-                <div
-                 className={`w-10 h-10 flex items-center justify-center text-white font-bold rounded-full ${
-                  currentUser.isAdmin ? 'bg-green-600' : 'bg-blue-600'}`}>
-                  {currentUser.username.charAt(0).toUpperCase()}
-                </div>
+                  <div
+                    className={`w-10 h-10 flex items-center justify-center text-white font-bold rounded-full ${currentUser.isAdmin ? 'bg-green-600' : 'bg-blue-600'}`}>
+                    {currentUser.username.charAt(0).toUpperCase()}
+                  </div>
                   <span className="text-gray-700 font-medium">{currentUser.username}</span>
                 </div>
               </>
