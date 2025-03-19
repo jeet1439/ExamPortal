@@ -1,5 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import nodemailer from 'nodemailer';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -19,6 +20,16 @@ app.use('/api/admin',adminRoutes);
 app.get('/', (req, res) => {
     res.send("hello");
 });
+
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
+
+  export default transporter;
 
 const start = async () => {
     try {

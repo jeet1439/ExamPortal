@@ -107,7 +107,12 @@ export default function DashNotifications() {
         className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
         disabled={loading}
       >
-        {loading ? "Sending..." : "Send Email"}
+        {loading ? "Sending..." : (
+          <>
+            Send <i className="fa-solid fa-paper-plane"></i>
+          </>
+        )}
+
       </button>
     </div>
   );
