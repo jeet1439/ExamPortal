@@ -52,11 +52,10 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className={`p-6 min-h-screen transition-all ${darkMode ? "bg-gray-900 text-white" : "bg-white text-black"}`}>
+    <div className={`p-6 min-h-screen transition-all ${darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-black"}`}>
       <h1 className={`text-3xl font-bold text-center mb-6 ${darkMode ? "text-white" : "text-black"}`}>
         Admin Dashboard
       </h1>
-
       {/* Tabs Navigation */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         {sections.map((section) => (
@@ -70,9 +69,9 @@ export default function Dashboard() {
           </Link>
         ))}
       </div>
-
+     <hr />
       {/* Render Selected Section */}
-      <div className={`p-6 shadow-md rounded-lg transition-all ${darkMode ? "bg-gray-800 text-white" : "bg-white text-black"}`}>
+      <div className={`p-6 shadow-md rounded-lg transition-all ${darkMode ? "bg-gray-800 text-white" : "bg-gray-100 text-black"}`}>
         {sections.find((section) => section.id === tab)?.component || <p className={`${darkMode ? "text-gray-300" : "text-gray-700"}`}>Select a section from above.</p>}
       </div>
     </div>
