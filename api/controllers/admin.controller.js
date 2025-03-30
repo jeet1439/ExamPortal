@@ -5,10 +5,11 @@ import nodemailer from "nodemailer";
 import transporter from "../index.js";
 import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
+import QuestionBank from '../models/questionBank.model.js';
+import { cloudinary } from '../cloud.config.js';
 
 
-
-const generatePassword = ()=>{
+const generatePassword = () => {
   return crypto.randomBytes(3).toString('hex');
 }
 
@@ -78,61 +79,132 @@ export const getStudentByFilter = async (req, res) => {
 
 //send the email to the users via email.......
 
-export const sendEmailToUser = async (req,res)=>{
-try{
-  const {users,message,subject}=req.body;
-  if (!users.length) return res.status(400).json({ message: "No users selected" });
-  let transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS
-    }
-  });
-
-  for (const user of users) {
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: user.email,
-      subject: subject,
-      text: message
+export const sendEmailToUser = async (req, res) => {
+  try {
+    const { users, message, subject } = req.body;
+    if (!users.length) return res.status(400).json({ message: "No users selected" });
+    let transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
     });
+
+    for (const user of users) {
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: user.email,
+        subject: subject,
+        text: message
+      });
+    }
+    res.json({ message: "Emails sent successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to send emails", err });
   }
-  res.json({ message: "Emails sent successfully" });
-}catch(err){
-res.status(500).json({message:"Failed to send emails", err });
-}
 
 };
 
-export const addTeacher = async(req,res)=>{
-  const {username , email} = req.body;
-  try{
-    let user = await User.findOne({email});
-    if(user) return res.status(400).json({ message: "Teacher already exists!" });
+export const addTeacher = async (req, res) => {
+  const { username, email } = req.body;
+  try {
+    let user = await User.findOne({ email });
+    if (user) return res.status(400).json({ message: "Teacher already exists!" });
 
     //create password 
-     const password = generatePassword();
-     const hashedPassword = await bcrypt.hash(password,10);
-      user = new User({
-         username,
-         email,
-         password: hashedPassword,
-         isAdmin : false,
-         isVerified:true
-     })
+    const password = generatePassword();
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user = new User({
+      username,
+      email,
+      password: hashedPassword,
+      isAdmin: false,
+      isVerified: true
+    })
 
-     await user.save();
-     await transporter.sendMail({
+    await user.save();
+    await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
       subject: "Your Admin Dashboard Login Credentials",
-      text: `Hello ${username},\n\nYour login password: ${password}\n\nYou must log in within 1 hour, or the password will expire.\n\nRegards,\nAdmin`,
+      text: `Hello ${username},\n\nYour login password: ${password}\n\nChange Your Password After Logging in \n\n You must log in within 1 hour, or the password will expire.\n\nRegards,\nAdmin`,
     });
     res.status(201).json({ message: "Teacher added and email sent! If Email not sent Check the Spam or Contact with the Admin" });
-  }catch(error){
-     console.error(error);
-     res.status(500).json({ message: "Error adding teacher" });
-  } 
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error adding teacher" });
+  }
 };
 
+
+export const addQuestionBank = async (req, res) => {
+  try {
+    const { year, department, content } = req.body;
+    const postedBy = req.user._id; // Assuming the user ID is attached to req.user
+
+    if (!year || !department || (!content && !req.file)) {
+      return res.status(400).json({ message: "Please provide required fields." });
+    }
+
+    let fileData = { url: "", filename: "" };
+
+    if (req.file) {
+      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: "QuestionBank",
+        resource_type: "auto",
+      });
+      fileData.url = uploadResult.secure_url;
+      fileData.filename = uploadResult.public_id;
+    }
+
+    const newQuestionBank = new QuestionBank({
+      year,
+      department,
+      content,
+      file: fileData,
+      postedBy,
+    });
+
+    await newQuestionBank.save();
+    res.status(201).json({ message: "Question Bank added successfully!" });
+  } catch (error) {
+    console.error("Error adding question bank:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const getUserQuestionBanks = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const userQuestionBanks = await QuestionBank.find({ postedBy: userId });
+
+    res.json(userQuestionBanks);
+  } catch (error) {
+    console.error("Error fetching user question banks:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
+export const deleteQuestion = async (req, res) => {
+  try {
+    let { id } = req.params;
+    const questionBank = await QuestionBank.findById(id);
+    if (!questionBank) {
+      return res.status(404).json({ message: "Question bank not found" });
+    }
+    if (questionBank.postedBy.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Unauthorized to delete this question bank" });
+    }
+    //Delete from Cloudinary
+    if (questionBank.file.filename) {
+      await cloudinary.uploader.destroy(questionBank.file.filename);
+    }
+    await QuestionBank.findByIdAndDelete(id);
+    res.json({ message: "Question bank deleted successfully!" });
+  } catch (error) {
+    console.error("Error deleting question bank:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};

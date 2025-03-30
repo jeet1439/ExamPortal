@@ -20,4 +20,12 @@ const storage = new CloudinaryStorage({
     },
 });
 
-export { cloudinary, storage };
+const questionBankStorage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'QuestionBank',
+        allowed_formats: ['jpg', 'jpeg', 'png', 'pdf', 'docx'],
+    },
+});
+
+export { cloudinary, storage, questionBankStorage };
