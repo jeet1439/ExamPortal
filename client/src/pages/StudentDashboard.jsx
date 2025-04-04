@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { useLocation, Link } from "react-router-dom";
+import StudentResult from "../components/studentComponent/StudentResult";
+import UpcomingExams from "../components/studentComponent/UpcomingExams";
+import LiveExams from "../components/studentComponent/LiveExams";
+import Notifications from "../components/studentComponent/Notifications";
+import QuestionBank from "../components/studentComponent/QuestionBank";
 
 export default function StudentDashboard() {
   const { currentUser } = useSelector((state) => state.user);
+  const location = useLocation();
+  const [tab, setTab] = useState("");
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -10,53 +18,48 @@ export default function StudentDashboard() {
     return () => clearInterval(timer);
   }, []);
 
-  // Dummy exam data (replace with API data)
-  const exams = [
-    { subject: "Mathematics", date: "2025-03-25", time: "10:00 AM" },
-    { subject: "Physics", date: "2025-03-28", time: "2:00 PM" },
-    { subject: "Computer Science", date: "2025-04-02", time: "11:00 AM" },
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const tabFromUrl = urlParams.get("tab");
+    if (tabFromUrl) {
+      setTab(tabFromUrl);
+    }
+  }, [location.search]);
+
+  const sections = [
+    { id: "liveExams", label: "Live Exams", component: <LiveExams /> },
+    { id: "results", label: "Results", component: <StudentResult/> },
+    { id: "upcomingExams", label: "Upcoming Exams", component: <UpcomingExams /> },
+    { id: "notifications", label: "Notifications", component: <Notifications /> },
+    { id: "questionBank", label: "Question Bank", component: <QuestionBank /> },
   ];
 
-
-  const handleStartExam = (examSubject) => {
-    alert(`Starting the ${examSubject} exam...`);
-  };
-
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center p-6">
-      {/* Full-width Clock */}
-      <div className="w-full bg-blue-600 text-white p-4 flex justify-between items-center text-2xl font-semibold shadow-lg rounded-sm">
-  <span>{time.toLocaleTimeString()}</span>
-  <h2 className="text-xl">Welcome, {currentUser ? currentUser.username : "Student"}!</h2>
-</div>
+    <div className="min-h-screen bg-gray-100 p-6">
+      {/* Header Section with Clock & Welcome Message */}
+      <div className="w-full bg-blue-600 text-white p-4 flex justify-between items-center text-2xl font-semibold shadow-lg rounded-md">
+        <span>{time.toLocaleTimeString()}</span>
+        <h2 className="text-xl">Welcome, {currentUser ? currentUser.username : "Student"}!</h2>
+      </div>
 
-      {/* Exams Section */}
-      <div className="w-full mt-8">
-        <h3 className="text-xl font-semibold mb-4">Upcoming Exams</h3>
-        <div className="bg-white p-4 rounded-lg shadow-md w-full">
-          {exams.length > 0 ? (
-            <ul>
-              {exams.map((exam, index) => (
-                <li
-                  key={index}
-                  className="p-3 border-b last:border-none flex justify-between items-center"
-                >
-                  <span className="font-medium">{exam.subject}</span>
-                  <span>{exam.date} at {exam.time}</span>
-                  {/* Start Exam Button */}
-                  <button
-                    onClick={() => handleStartExam(exam.subject)}
-                    className="ml-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-700"
-                  >
-                    Start Exam
-                  </button>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No upcoming exams.</p>
-          )}
-        </div>
+      {/* Navigation Tabs */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 my-6">
+        {sections.map((section) => (
+          <Link
+            key={section.id}
+            to={`/student-dashboard?tab=${section.id}`}
+            className={`p-4 text-center font-semibold border rounded-md cursor-pointer transition 
+            ${tab === section.id ? "bg-blue-600 text-white" : "bg-white text-black hover:bg-gray-200"}`}
+          >
+            {section.label}
+          </Link>
+        ))}
+      </div>
+      <hr />
+
+      {/* Render Selected Tab */}
+      <div className="p-6 shadow-md rounded-lg bg-white">
+        {sections.find((section) => section.id === tab)?.component || <p className="text-gray-700">Select a section from above.</p>}
       </div>
     </div>
   );

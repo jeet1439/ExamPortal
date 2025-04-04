@@ -9,7 +9,6 @@ export default function DashNotifications() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Fetch users based on filters
   useEffect(() => {
     const fetchUsers = async () => {
       setLoading(true);
@@ -33,7 +32,6 @@ export default function DashNotifications() {
     fetchUsers();
   }, [year, department, rollNo]);
 
-  // Handle sending email
   const handleSendEmail = async () => {
     if (!subject) return alert("Subject cannot be empty!");
     if (!message) return alert("Message cannot be empty!");
@@ -59,19 +57,18 @@ export default function DashNotifications() {
   };
 
   return (
-    <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md ">
-      <h2 className="text-2xl font-bold mb-4 text-center">Send Notifications</h2>
+    <div className="p-6 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg backdrop-blur-md bg-opacity-80 border border-gray-700 text-white max-w-3xl mx-auto">
+      <h2 className="text-3xl font-extrabold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-yellow-500">Send Notifications</h2>
 
-      {/* Filters */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-        <select value={year} onChange={(e) => setYear(e.target.value)} className="p-2 border rounded">
+        <select value={year} onChange={(e) => setYear(e.target.value)} className="p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-blue-400">
           <option value="">Select Year</option>
           {[1, 2, 3, 4].map((yr) => (
             <option key={yr} value={yr}>{yr}</option>
           ))}
         </select>
 
-        <select value={department} onChange={(e) => setDepartment(e.target.value)} className="p-2 border rounded">
+        <select value={department} onChange={(e) => setDepartment(e.target.value)} className="p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-blue-400">
           <option value="">Select Department</option>
           {["ME", "EE", "CE", "CSE", "ECE"].map((dept) => (
             <option key={dept} value={dept}>{dept}</option>
@@ -79,40 +76,36 @@ export default function DashNotifications() {
         </select>
 
         <input type="number" placeholder="Roll No (optional)" value={rollNo} onChange={(e) => setRollNo(e.target.value)}
-          className="p-2 border rounded"
+          className="p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-blue-400"
         />
       </div>
 
-      {/* Subject Input */}
       <input
         type="text"
         value={subject}
         onChange={(e) => setSubject(e.target.value)}
-        placeholder="Enter Subject of Your mail.."
-        className="w-full p-2 border rounded mb-4"
+        placeholder="Enter Subject..."
+        className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-blue-400 mb-4"
       />
 
-      {/* Message Input */}
       <textarea
         value={message}
         onChange={(e) => setMessage(e.target.value)}
-        placeholder="Type your message here..."
-        className="w-full p-2 border rounded mb-4"
+        placeholder="Type your message..."
+        className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-blue-400 mb-4"
         rows="4"
       ></textarea>
 
-      {/* Send Button */}
       <button
         onClick={handleSendEmail}
-        className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+        className="w-full py-3 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 hover:from-purple-600 hover:to-blue-500 transition-all duration-300 transform hover:scale-105 shadow-md"
         disabled={loading}
       >
         {loading ? "Sending..." : (
           <>
-            Send <i className="fa-solid fa-paper-plane"></i>
+            Send <i className="fa-solid fa-paper-plane ml-2"></i>
           </>
         )}
-
       </button>
     </div>
   );
