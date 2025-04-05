@@ -2,7 +2,7 @@ import React from 'react'
 
 const Notifications = () => {
   return (
-    <div>Notifications</div>
+    <div>Yet to come.....</div>
   )
 }
 

@@ -4,7 +4,7 @@ import { useLocation, Link } from "react-router-dom";
 import StudentResult from "../components/studentComponent/StudentResult";
 import UpcomingExams from "../components/studentComponent/UpcomingExams";
 import LiveExams from "../components/studentComponent/LiveExams";
-import Notifications from "../components/studentComponent/Notifications";
+import Performance from "../components/studentComponent/Performance";
 import QuestionBank from "../components/studentComponent/QuestionBank";
 
 export default function StudentDashboard() {
@@ -30,7 +30,7 @@ export default function StudentDashboard() {
     { id: "liveExams", label: "Live Exams", component: <LiveExams /> },
     { id: "results", label: "Results", component: <StudentResult/> },
     { id: "upcomingExams", label: "Upcoming Exams", component: <UpcomingExams /> },
-    { id: "notifications", label: "Notifications", component: <Notifications /> },
+    { id: "performace", label: "Performances", component: <Performance /> },
     { id: "questionBank", label: "Question Bank", component: <QuestionBank /> },
   ];
 

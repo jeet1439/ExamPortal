@@ -14,27 +14,20 @@ export default function LiveExams() {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-
-        // Handle non-200 responses gracefully
-        if (!response.ok) {
-          throw new Error(`API Error: ${response.status} ${response.statusText}`);
-        }
-
+    
         const data = await response.json();
-
-        // Ensure we have an array; otherwise, set an empty array
-        if (Array.isArray(data)) {
-          setLiveExams(data);
-        } else {
-          throw new Error("Invalid response format from server");
+    
+        if (!response.ok) {
+          throw new Error(data.message || "Error fetching live exams");
         }
+    
+        setLiveExams(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Error fetching live exams:", error.message);
-        setError("Failed to fetch live exams. Please try again later.");
-        setLiveExams([]); // Set empty array to prevent crashes
+        setLiveExams([]); // Instead of error, just show no exams
       }
     };
-
+    
     if (currentUser) {
       fetchLiveExams();
     }

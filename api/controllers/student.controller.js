@@ -1,4 +1,5 @@
 import Exam from "../models/exam.modal.js";
+import QuestionBank from "../models/questionBank.model.js";
 // import User from "../models/user.modal";
 
 //Gets all the live exams 
@@ -49,4 +50,20 @@ export const getLiveExams = async (req, res) => {
 
 
 
+export const getQuestionBanks = async(req,res)=>{
+  try{
+    const{department,year}=req.user;
+    const questionBank = await QuestionBank.find({
+      department:department,
+      year:year
+    })
 
+    if(questionBank.length === 0){
+      return res.status(200).json({ message: "No upcoming exams found", questionBank: [] });
+    }
+    res.status(200).json(questionBank);
+
+  }catch(err){
+   res.status(500).json({message:"Error fetching question banks",err});
+  }
+};
