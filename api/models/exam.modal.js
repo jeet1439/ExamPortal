@@ -50,13 +50,30 @@ const examSchema = new mongoose.Schema({
         type: Number, // duration in minutes
         required: true,
     },
+    examDate: {
+        type: Date,  // Stores both date and time
+        required: true,
+    },
     totalMarks: {
         type: Number,
         required: true,
         default: function () {
             return this.questions.reduce((sum, q) => sum + q.marks, 0);
         }
-    }
+    },
+    isLive:{
+        type : Boolean,
+        default:false ,   //Initially set it to flase .....
+    },
+    isPublished: {
+        type: Boolean,
+        default: false,  // initially result is not published
+    },
+    createdBy: { 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+      }
 }, { timestamps: true });
 
 const Exam = mongoose.model("Exam", examSchema);

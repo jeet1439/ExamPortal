@@ -63,7 +63,16 @@ const DashVerifyStudent = () => {
                 <td className="border p-2">{student.username}</td>
                 <td className="border p-2">{student.email}</td>
                 <td className="border p-2">
-                  <button>View</button>
+                {student.validId && (
+                    <a
+                      href={student.validId.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-700"
+                    >
+                      View ID
+                    </a>
+                  )}
                 </td>
                 <td className="border p-2">
                   <button

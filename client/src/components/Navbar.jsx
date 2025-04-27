@@ -45,11 +45,11 @@ export default function Navbar() {
             {currentUser ? (
               currentUser.isAdmin ? (
                 <Link to="/dashboard" className="text-gray-700 hover:text-blue-600 font-medium">
-                  dashboard
+                  Dashboard
                 </Link>
               ) : (
                 <Link to="/student-dashboard" className="text-gray-700 hover:text-blue-600 font-medium">
-                  dashboard
+                  Dashboard
                 </Link>
               )
             ) : (
