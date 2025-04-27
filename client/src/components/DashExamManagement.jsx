@@ -126,6 +126,7 @@ export default function CreateExam() {
             <input className="w-full p-2 border rounded" type="number" placeholder="Marks" value={q.marks} onChange={e => handleChange(qIndex, "marks", e.target.value)} />
           </div>
         ))}
+        
         <div className="flex flex-row justify-between">
           <button className="mt-4 p-2 bg-blue-500 text-white rounded" onClick={addQuestion}>+Add Question</button>
           <button className="mt-4 p-2 bg-green-500 text-white rounded" onClick={handleSubmit}>Create Exam</button>
