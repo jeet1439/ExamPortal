@@ -57,6 +57,12 @@ export default function CreateExam() {
     setExam({ ...exam, questions: updatedQuestions });
   };
 
+  const selectCorrectOption = (qIndex, value) => {
+    const updatedQuestions = [...exam.questions];
+    updatedQuestions[qIndex].correctAnswer = value;
+    setExam({ ...exam, questions: updatedQuestions });
+  };
+
   const handleSubmit = async () => {
     try {
       const response = await fetch("/api/admin/exam/add-new", {
@@ -70,7 +76,7 @@ export default function CreateExam() {
 
       if (response.ok) {
         setSuccessMsg('Exam Created Successfully!');
-        setExam({ title: "", description: "", department: "", year: "", duration: "", questions: [] });
+        setExam({ title: "", description: "", department: "", year: "", duration: "", questions: [], examDate: "" });
       } else {
         setErrMsg('Error creating the exam!');
       }
@@ -98,14 +104,14 @@ export default function CreateExam() {
   };
 
   const handleLive = async (id, currentStatus) => {
-    const newStatus = !currentStatus; // Toggle boolean value
+    const newStatus = !currentStatus;
     const response = await fetch(`/api/admin/exam/liveExam/${id}`, {
       method: "PATCH",
       headers: {
         "Authorization": `Bearer ${localStorage.getItem("token")}`,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ isLive: newStatus }) // Send boolean instead of string
+      body: JSON.stringify({ isLive: newStatus })
     });
 
     if (response.ok) {
@@ -119,7 +125,7 @@ export default function CreateExam() {
   };
 
   return (
-    <div className="p-8 max-w-3xl mx-auto bg-white/20 backdrop-blur-lg rounded-2xl shadow-lg border border-gray-200">
+    <div className="p-8 max-w-4xl mx-auto bg-white/20 backdrop-blur-lg rounded-2xl shadow-lg border border-gray-200">
       <h2 className="text-3xl font-bold text-gray-800 text-center mb-6">📝 Create an Exam</h2>
 
       <div className="space-y-6">
@@ -129,26 +135,31 @@ export default function CreateExam() {
         <textarea className="w-full p-3 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400" placeholder="Description"
           value={exam.description} onChange={e => setExam({ ...exam, description: e.target.value })} />
 
-        <select className="w-full p-3 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400" onChange={e => setExam({ ...exam, department: e.target.value })}>
+        <select className="w-full p-3 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400" onChange={e => setExam({ ...exam, department: e.target.value })} value={exam.department}>
           <option value="">Select Department</option>
           {departments.map(dep => <option key={dep} value={dep}>{dep}</option>)}
         </select>
 
-        <select className="w-full p-3 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400" onChange={e => setExam({ ...exam, year: e.target.value })}>
+        <select className="w-full p-3 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400" onChange={e => setExam({ ...exam, year: e.target.value })} value={exam.year}>
           <option value="">Select Year</option>
           {years.map(year => <option key={year} value={year}>{year}</option>)}
         </select>
 
         <input className="w-full p-3 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400" type="number" placeholder="Duration (minutes)" value={exam.duration} onChange={e => setExam({ ...exam, duration: e.target.value })} />
         <input className="w-full p-3 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400" type="datetime-local" value={exam.examDate} onChange={e => setExam({ ...exam, examDate: e.target.value })} />
-        
+
         {exam.questions.map((q, qIndex) => (
-          <div key={qIndex} className="p-4 border rounded-xl shadow-md bg-gray-50 space-y-3">
+          <div key={qIndex} className="p-5 border rounded-2xl shadow-md bg-gray-50 space-y-4">
+            <h3 className="text-xl font-semibold text-gray-700">Question {qIndex + 1}</h3>
             <input className="w-full p-3 border rounded-xl shadow-sm" placeholder="Question" value={q.question} onChange={e => handleChange(qIndex, "question", e.target.value)} />
-            {q.options.map((opt, oIndex) => (
-              <input key={oIndex} className="w-full p-3 border rounded-xl shadow-sm" placeholder={`Option ${oIndex + 1}`} value={opt} onChange={e => handleOptionChange(qIndex, oIndex, e.target.value)} />
-            ))}
-            <input className="w-full p-3 border rounded-xl shadow-sm" placeholder="Correct Answer" value={q.correctAnswer} onChange={e => handleChange(qIndex, "correctAnswer", e.target.value)} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {q.options.map((opt, oIndex) => (
+                <label key={oIndex} className="flex items-center space-x-3 bg-white p-2 rounded-xl shadow-sm border">
+                  <input type="radio" name={`correct-${qIndex}`} checked={q.correctAnswer === opt} onChange={() => selectCorrectOption(qIndex, opt)} />
+                  <input className="w-full p-2 border rounded-lg" placeholder={`Option ${oIndex + 1}`} value={opt} onChange={e => handleOptionChange(qIndex, oIndex, e.target.value)} />
+                </label>
+              ))}
+            </div>
             <input className="w-full p-3 border rounded-xl shadow-sm" type="number" placeholder="Marks" value={q.marks} onChange={e => handleChange(qIndex, "marks", e.target.value)} />
           </div>
         ))}

@@ -1,6 +1,8 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import User from "../models/user.modal.js";
+import Exam from "../models/exam.modal.js";
+import Result from "../models/result.model.js";
 import nodemailer from "nodemailer";
 import transporter from "../index.js";
 import crypto from 'crypto';
@@ -209,5 +211,39 @@ export const deleteQuestion = async (req, res) => {
   }
 };
 
+export const getExamsToPublish = async (req, res) => {
+  try {
+    const userId = req.user; // Assuming you have authentication middleware which sets req.user
 
+    // Fetch only the exams created by the logged-in user
+    const exams = await Exam.find({ createdBy: userId });
+
+    const examsWithStudentCounts = await Promise.all(
+      exams.map(async (exam) => {
+        // Count the number of students who submitted this exam
+        const studentCount = await Result.countDocuments({ exam: exam._id });
+
+        // Only return exams where more than 1 student submitted
+        if (studentCount > 0) {
+          return {
+            _id: exam._id,
+            title: exam.title,
+            department: exam.department,
+            year: exam.year,
+            studentCount: studentCount,
+          };
+        } else {
+          return null;
+        }
+      })
+    );
+
+    const filteredExams = examsWithStudentCounts.filter((exam) => exam !== null);
+
+    res.status(200).json(filteredExams);
+  } catch (error) {
+    console.error('Error fetching exams to publish:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
 

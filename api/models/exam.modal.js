@@ -64,7 +64,16 @@ const examSchema = new mongoose.Schema({
     isLive:{
         type : Boolean,
         default:false ,   //Initially set it to flase .....
-    } 
+    },
+    isPublished: {
+        type: Boolean,
+        default: false,  // initially result is not published
+    },
+    createdBy: { 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+      }
 }, { timestamps: true });
 
 const Exam = mongoose.model("Exam", examSchema);

@@ -36,6 +36,8 @@ export const createExam = async (req, res) => {
             duration,
             examDate: parsedExamDate, // Store properly formatted date
             isLive: false,
+            isPublished:false,
+            createdBy:req.user
         });
 
         await newExam.save();

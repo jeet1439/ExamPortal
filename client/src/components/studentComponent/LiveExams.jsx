@@ -34,8 +34,13 @@ export default function LiveExams() {
   }, [currentUser]);
 
   const handleStartExam = (examId) => {
-    alert(`🚀 Starting exam with ID: ${examId}`);
+    const confirmed = window.confirm("Are you sure you want to start the exam?");
+    if (confirmed) {
+      // Open exam page in a new tab
+      window.open(`/newExam/${examId}`);
+    }
   };
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#1b1f38] to-[#232946] p-8">
