@@ -86,82 +86,60 @@ export default function UpcomingExams() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 to-purple-100 p-8">
-      <div className="container mx-auto">
-        <h2 className="text-3xl font-extrabold text-gray-800 mb-8 tracking-wide border-b-4 border-purple-400 pb-3">
-          <span className="text-purple-600 mr-2">🚀</span> Upcoming Exams
-        </h2>
+  <div className="min-h-screen bg-gray-50 p-8">
+    <div className="max-w-6xl mx-auto">
+      <h2 className="text-3xl font-bold text-blue-800 mb-6 border-b-2 border-blue-300 pb-2">
+        Upcoming Exams
+      </h2>
 
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
-            <strong className="font-bold">Error!</strong>
-            <span className="block sm:inline">{error}</span>
-          </div>
-        )}
-
-        {upcomingExams === null ? (
-          <div className="flex justify-center items-center h-40">
-            <p className="text-xl text-gray-600 italic animate-pulse">⏳ Loading exams...</p>
-          </div>
-        ) : upcomingExams.length === 0 ? (
-          <div className="flex justify-center items-center h-40">
-            <p className="text-xl text-gray-600 italic">🎉 No upcoming exams at the moment.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {upcomingExams.map((exam) => (
-              <div
-                key={exam._id}
-                className="bg-white rounded-xl shadow-2xl overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-xl border border-purple-200"
-              >
-                <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-4 text-center">
-                  <h3 className="text-2xl font-semibold tracking-wide">{exam.title}</h3>
-                </div>
-                <div className="p-6">
-                  <p className="text-gray-700 mb-4">
-                    <span className="text-lg font-medium">{exam.description}</span>
-                  </p>
-                  <div className="space-y-3">
-                    <p className="flex items-center">
-                      <span className="text-gray-900 font-semibold mr-2">⏳ Duration:</span>
-                      <span className="font-mono">{exam.duration} minutes</span>
-                    </p>
-                    <p className="flex items-center">
-                      <span className="text-gray-900 font-semibold mr-2">🏛 Department:</span>
-                      <span className="font-medium">{exam.department}</span>
-                    </p>
-                    <p className="flex items-center">
-                      <span className="text-gray-900 font-semibold mr-2">🎓 Year:</span>
-                      <span className="font-medium">{exam.year}</span>
-                    </p>
-                    <p className="flex items-center">
-                      <span className="text-gray-900 font-semibold mr-2">📅 Scheduled:</span>
-                      <span className="font-medium">
-                        {new Date(exam.examDate).toLocaleDateString("en-GB")} at{" "}
-                        {new Date(exam.examDate).toLocaleTimeString("en-US", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: true,
-                        })}
-                      </span>
-                    </p>
-                    <p className="flex items-center">
-                      <span className="text-gray-900 font-semibold mr-2">⏰ Starts in:</span>
-                      {formatTime(timeRemaining[exam._id] || 0)}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        <div className="mt-8 flex justify-center">
-          <marquee behavior="scroll" direction="left" scrollamount="5" className="text-lg text-purple-600 font-semibold animate-pulse">
-            ✨ Prepare well and ace your exams! Good luck! ✨
-          </marquee>
+      {error && (
+        <div className="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded mb-6">
+          <strong className="font-semibold">Error:</strong> {error}
         </div>
-      </div>
+      )}
+
+      {upcomingExams === null ? (
+        <div className="flex justify-center items-center h-40">
+          <p className="text-lg text-gray-600 italic animate-pulse">Loading exams...</p>
+        </div>
+      ) : upcomingExams.length === 0 ? (
+        <div className="flex justify-center items-center h-40">
+          <p className="text-lg text-gray-600 italic">No upcoming exams at the moment.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {upcomingExams.map((exam) => (
+            <div
+              key={exam._id}
+              className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition p-5"
+            >
+              <h3 className="text-xl font-semibold text-blue-900 mb-2">{exam.title}</h3>
+              <p className="text-sm text-gray-700 mb-4">{exam.description}</p>
+
+              <ul className="text-sm space-y-1 text-gray-600">
+                <li><strong className="text-gray-800">Duration:</strong> {exam.duration} minutes</li>
+                <li><strong className="text-gray-800">Department:</strong> {exam.department}</li>
+                <li><strong className="text-gray-800">Year:</strong> {exam.year}</li>
+                <li>
+                  <strong className="text-gray-800">Scheduled:</strong>{' '}
+                  {new Date(exam.examDate).toLocaleDateString("en-GB")} at{" "}
+                  {new Date(exam.examDate).toLocaleTimeString("en-US", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                  })}
+                </li>
+                <li>
+                  <strong className="text-gray-800">Starts in:</strong>{' '}
+                  {formatTime(timeRemaining[exam._id] || 0)}
+                </li>
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
-  );
+  </div>
+);
+
 }

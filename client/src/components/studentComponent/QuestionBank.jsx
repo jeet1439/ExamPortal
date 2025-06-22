@@ -52,66 +52,70 @@ export default function QuestionBank() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1b1f38] to-[#232946] p-8">
-      <h2 className="text-3xl font-bold text-[#e0e6ed] mb-6 border-b-2 border-[#00c6a7] pb-2 shadow-md">
-        📘 Your Question Bank
-      </h2>
+    <div className="min-h-screen bg-gray-100 p-8 font-sans">
+  <h3 className="text-4xl font-bold text-gray-800 mb-8 border-b-4 border-teal-500 pb-3 shadow-sm">
+     Question Bank
+  </h3>
 
-      {error && (
-        <p className="text-red-400 bg-red-900/30 p-3 rounded-md border border-red-500 mb-4 shadow-sm">
-          {error}
-        </p>
-      )}
-
-      {questions === null ? (
-        <p className="text-lg text-[#aeb6c3] text-center animate-pulse">
-          ⏳ Loading your content...
-        </p>
-      ) : questions.length === 0 ? (
-        <p className="text-lg text-[#9aa3b2] text-center">
-          📂 No question banks available for your department and year.
-        </p>
-      ) : (
-        <div className="overflow-x-auto shadow-xl rounded-lg">
-          <table className="min-w-full text-sm text-[#e0e6ed] border border-[#4c597a] rounded-lg">
-            <thead className="bg-[#2a2e45] text-[#00c6a7] uppercase text-xs font-semibold tracking-wider">
-              <tr>
-                <th className="px-6 py-4 text-left">📆 Year</th>
-                <th className="px-6 py-4 text-left">🏛 Department</th>
-                <th className="px-6 py-4 text-left">📝 Content</th>
-                <th className="px-6 py-4 text-center">📄 File</th>
-                <th className="px-6 py-4 text-center">📅 Date Posted</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#3a415b] bg-[#1e2136]">
-              {questions.map((q) => (
-                <tr key={q._id} className="hover:bg-[#2d314a] transition-all duration-300">
-                  <td className="px-6 py-4">{q.year}</td>
-                  <td className="px-6 py-4">{q.department}</td>
-                  <td className="px-6 py-4">{q.content || "No description"}</td>
-                  <td className="px-6 py-4 text-center">
-                    {q.file?.url ? (
-                      <a
-                        href={q.file.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[#00c6a7] font-medium hover:underline"
-                      >
-                        View File
-                      </a>
-                    ) : (
-                      <span className="text-gray-500 italic">No file</span>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    {q.createdAt ? formatDate(q.createdAt) : "N/A"}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+  {error && (
+    <div className="text-red-600 bg-red-100 border border-red-300 px-4 py-3 rounded-md mb-6">
+      {error}
     </div>
+  )}
+
+  {questions === null ? (
+    <p className="text-xl text-center text-gray-600 animate-pulse">
+      Loading questions...
+    </p>
+  ) : questions.length === 0 ? (
+    <p className="text-lg text-center text-gray-500">
+      No question banks available for your department and year.
+    </p>
+  ) : (
+    <div className="overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200">
+      <table className="min-w-full text-sm text-gray-800">
+        <thead className="bg-gray-50 text-gray-700 uppercase text-xs font-semibold tracking-wider">
+          <tr>
+            <th className="px-6 py-4 text-left">Year</th>
+            <th className="px-6 py-4 text-left">Department</th>
+            <th className="px-6 py-4 text-left">Content</th>
+            <th className="px-6 py-4 text-center">File</th>
+            <th className="px-6 py-4 text-center">Posted</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-200 bg-white">
+          {questions.map((q) => (
+            <tr
+              key={q._id}
+              className="hover:bg-gray-100 transition-all duration-200"
+            >
+              <td className="px-6 py-4">{q.year}</td>
+              <td className="px-6 py-4">{q.department}</td>
+              <td className="px-6 py-4">{q.content || "No description"}</td>
+              <td className="px-6 py-4 text-center">
+                {q.file?.url ? (
+                  <a
+                    href={q.file.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-teal-600 font-medium hover:underline"
+                  >
+                    View File
+                  </a>
+                ) : (
+                  <span className="text-gray-400 italic">No file</span>
+                )}
+              </td>
+              <td className="px-6 py-4 text-center">
+                {q.createdAt ? formatDate(q.createdAt) : "N/A"}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )}
+</div>
+
   );
 }

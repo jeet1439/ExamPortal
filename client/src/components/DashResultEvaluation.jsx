@@ -47,7 +47,7 @@ const DashResultEvaluation = () => {
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.heading}>📄 Exams Ready for Evaluation</h2>
+      <h2 style={styles.heading}>Exams Ready for Evaluation</h2>
       <table style={styles.table}>
         <thead>
           <tr>

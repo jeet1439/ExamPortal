@@ -38,7 +38,7 @@ export default function AdminLogin() {
                 setTimeout(() => {
                     dispatch(signInSuccess(data));
                     navigate('/dashboard');
-                }, 5000); // delay in ms
+                }, 2000); // delay in ms
             } else {
                 console.error('Sign in failed', data.message);
                 dispatch(signInFaliure(data.message));

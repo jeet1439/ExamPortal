@@ -103,11 +103,11 @@ const DashQuestionBank = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-8 bg-gradient-to-br from-white via-blue-50 to-purple-100 shadow-xl rounded-2xl mt-10 border border-gray-200">
-      <h2 className="text-3xl font-extrabold mb-6 text-blue-700">📚 Upload Question Bank</h2>
+      <h2 className="text-3xl font-bold mb-6 text-blue-700">Upload Question Bank</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1">🎓 Year:</label>
+          <label className="block text-sm font-semibold text-gray-700 mb-1">Year:</label>
           <select value={year} onChange={(e) => setYear(e.target.value)} className="w-full p-3 border rounded-lg bg-white shadow-sm">
             <option value="">Select Year</option>
             <option value="1">1st Year</option>
@@ -118,7 +118,7 @@ const DashQuestionBank = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1">🏢 Department:</label>
+          <label className="block text-sm font-semibold text-gray-700 mb-1">Department:</label>
           <select value={department} onChange={(e) => setDepartment(e.target.value)} className="w-full p-3 border rounded-lg bg-white shadow-sm">
             <option value="">Select Department</option>
             <option value="CSE">CSE</option>
@@ -131,7 +131,7 @@ const DashQuestionBank = () => {
       </div>
 
       <div className="mt-6">
-        <label className="block text-sm font-semibold text-gray-700 mb-1">📝 Content:</label>
+        <label className="block text-sm font-semibold text-gray-700 mb-1">Content:</label>
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
@@ -141,7 +141,7 @@ const DashQuestionBank = () => {
       </div>
 
       <div className="mt-6">
-        <label className="block text-sm font-semibold text-gray-700 mb-1">📁 Upload File: (.jpg, .jpeg, .png, .pdf, .docx)</label>
+        <label className="block text-sm font-semibold text-gray-700 mb-1">Upload File: (.jpg, .jpeg, .png, .pdf, .docx)</label>
         <input
           type="file"
           accept=".jpg,.jpeg,.png,.pdf,.docx"
@@ -156,7 +156,7 @@ const DashQuestionBank = () => {
           disabled={loading}
           className="bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transition duration-300"
         >
-          {loading ? "Uploading..." : "🚀 Upload"}
+          {loading ? "Uploading..." : "Upload"}
         </button>
       </div>
 

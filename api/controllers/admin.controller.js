@@ -15,9 +15,6 @@ const generatePassword = () => {
   return crypto.randomBytes(3).toString('hex');
 }
 
-
-
-
 // Get all students pending verification
 export const getUnverifiedStudents = async (req, res) => {
   try {
@@ -319,5 +316,37 @@ export const unpublishExamResult = async (req, res) => {
   } catch (error) {
     console.error('Error unpublishing exam result:', error);
     res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const publishResults = async (req, res) => {
+  try {
+    const { examId } = req.params;
+
+    await Result.updateMany(
+      { exam: examId },
+      { isPublished: true }
+    );
+
+    res.status(200).json({ message: "Results published successfully" });
+  } catch (err) {
+    console.error("Error publishing results:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const unpublishResults = async (req, res) => {
+  try {
+    const { examId } = req.params;
+
+    await Result.updateMany(
+      { exam: examId },
+      { isPublished: false }
+    );
+
+    res.status(200).json({ message: "Results unpublished successfully" });
+  } catch (err) {
+    console.error("Error unpublishing results:", err);
+    res.status(500).json({ message: "Internal server error" });
   }
 };

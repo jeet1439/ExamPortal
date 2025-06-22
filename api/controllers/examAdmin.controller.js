@@ -5,28 +5,28 @@ export const createExam = async (req, res) => {
     try {
         const { title, description, department, year, questions, duration, examDate } = req.body;
 
-        // ✅ Check if all required fields are provided
+        //Check if all required fields are provided
         if (!title || !department || !year || !duration || !examDate) {
             return res.status(400).json({ message: "All required fields must be provided." });
         }
 
-        // ✅ Ensure the `year` is within the valid range
+        //Ensure the `year` is within the valid range
         if (year < 1 || year > 4) {
             return res.status(400).json({ message: "Invalid year. Must be between 1 and 4." });
         }
 
-        // ✅ Parse `examDate` and check if it is valid
+        //Parse `examDate` and check if it is valid
         const parsedExamDate = new Date(examDate);
         if (isNaN(parsedExamDate.getTime())) {
             return res.status(400).json({ message: "Invalid exam date format." });
         }
 
-        // ✅ Validate `questions` array (optional)
+        //Validate `questions` array (optional)
         if (questions && !Array.isArray(questions)) {
             return res.status(400).json({ message: "Questions must be an array." });
         }
 
-        // ✅ Create a new exam
+       //Create a new exam
         const newExam = new Exam({
             title,
             description,

@@ -9,6 +9,4 @@ import { getExamById, submitExam } from '../controllers/student.controller.js';
 router.get('/newExam/:examId',verifyToken,getExamById);
 router.post('/submitExam',verifyToken,submitExam);
 
-
-
 export default router;

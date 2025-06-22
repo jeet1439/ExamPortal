@@ -6,26 +6,30 @@ import Result from "../models/result.model.js";
 //Gets all the live exams 
 export const getLiveExams = async (req, res) => {
   try {
-    const { department, year } = req.user;
+    const { department, year, _id: studentId } = req.user;
 
     if (!department || !year) {
       return res.status(400).json({ message: "Invalid user details" });
     }
 
-    // Fetch exams matching department and year
+    // Get exam IDs the student has already submitted
+    const submittedResults = await Result.find({ student: studentId }).select('exam');
+    const submittedExamIds = submittedResults.map(result => result.exam.toString());
+
+    // Fetch live exams excluding the ones already submitted by the student
     const exams = await Exam.find({
-      department: department,
-      year: year,
+      department,
+      year,
       isLive: true,
+      _id: { $nin: submittedExamIds }
     }).sort({ date: 1 });
 
-    res.status(200).json(exams); // Always return 200, even if no exams found
+    res.status(200).json(exams);
   } catch (error) {
     console.error("Error in getLiveExams:", error);
     res.status(500).json({ message: "Server Error" });
   }
 };
-
 
 
 export const getUpcomingExams = async (req, res) => {
@@ -74,7 +78,7 @@ export const getExamById = async (req, res) => {
   try {
     const { examId } = req.params;
 
-    const exam = await Exam.findById(examId); // Replace with your model and logic
+    const exam = await Exam.findById(examId);
 
     if (!exam) {
       return res.status(404).json({ message: "Exam not found" });
@@ -137,3 +141,26 @@ export const submitExam = async (req, res) => {
 };
 
 
+export const getResult = async (req, res) => {
+  try {
+    const studentId = req.user._id;
+
+    // Fetch all results for the student and populate the exam
+    const results = await Result.find({ student: studentId }).populate('exam');
+    // Filter out results where the exam is not published
+    const publishedResults = results
+      .filter(result => result.exam && result.exam.isPublished)
+      .map(result => ({
+        examId: result.exam._id,
+        examTitle: result.exam.title,
+        examDate: result.exam.createdAt,
+        marksObtained: result.score,
+        totalMarks: result.exam.totalMarks || 20,
+      }));
+
+    res.status(200).json(publishedResults);
+  } catch (error) {
+    console.error('Error fetching results:', error);
+    res.status(500).json({ message: 'Server error fetching results' });
+  }
+};

@@ -10,17 +10,17 @@ export const verifyToken = async (req, res, next) => {
     try {
         const token = req.cookies.access_token;
         if (!token) {
-            console.log("❌ No Token Provided");
+            console.log("No Token Provided");
             return next(errorHandler(401, 'Unauthorized - No Token Provided'));
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        // console.log("✅ Decoded Token:", decoded);
+        // console.log("Decoded Token:", decoded);
 
         // Fetch user details from the database
         const user = await User.findById(decoded.id);
         if (!user) {
-            console.log("❌ User Not Found in Database");
+            console.log("User Not Found in Database");
             return next(errorHandler(404, 'User not found'));
         }
 
@@ -28,7 +28,7 @@ export const verifyToken = async (req, res, next) => {
         // console.log("👤 Verified User:", req.user);
         next();
     } catch (error) {
-        console.log("❌ Token Verification Error:", error.message);
+        console.log("Token Verification Error:", error.message);
         return next(errorHandler(401, 'Unauthorized - Invalid Token'));
     }
 };

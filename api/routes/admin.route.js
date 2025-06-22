@@ -15,7 +15,7 @@ router.delete("/students/reject/:id",verifyToken, verifyAdmin, rejectStudent);
 //route to conformations
 router.get("/email/users", verifyToken, verifyAdmin, getStudentByFilter);
 router.post("/email/send-email", verifyToken, verifyAdmin, sendEmailToUser);
-router.post("/add-teacher",addTeacher);
+router.post("/add-teacher",verifyToken, verifyAdmin, addTeacher);
 
 //route for adding exam
 router.post("/exam/add-new", verifyAdmin, createExam);
