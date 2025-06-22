@@ -28,44 +28,44 @@ export const getLiveExams = async (req, res) => {
 
 
 
-  export const getUpcomingExams = async(req,res)=>{
-    try{
-      const {department,year}=req.user;
+export const getUpcomingExams = async (req, res) => {
+  try {
+    const { department, year } = req.user;
     const exams = await Exam.find({
-      department:department,
-      year:year,
-      isLive:false,
-      examDate:{$gt: new Date()} 
+      department: department,
+      year: year,
+      isLive: false,
+      examDate: { $gt: new Date() }
     })
-    
+
     if (exams.length === 0) {
       return res.status(200).json({ message: "No upcoming exams found", exams: [] });
     }
 
     res.status(200).json(exams);
-    }catch(error){
-      res.status(500).json({ message: "Error fetching upcoming exams", error });
-    }
-    
-  };
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching upcoming exams", error });
+  }
+
+};
 
 
 
-export const getQuestionBanks = async(req,res)=>{
-  try{
-    const{department,year}=req.user;
+export const getQuestionBanks = async (req, res) => {
+  try {
+    const { department, year } = req.user;
     const questionBank = await QuestionBank.find({
-      department:department,
-      year:year
+      department: department,
+      year: year
     })
 
-    if(questionBank.length === 0){
+    if (questionBank.length === 0) {
       return res.status(200).json({ message: "No upcoming exams found", questionBank: [] });
     }
     res.status(200).json(questionBank);
 
-  }catch(err){
-   res.status(500).json({message:"Error fetching question banks",err});
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching question banks", err });
   }
 };
 
@@ -87,53 +87,17 @@ export const getExamById = async (req, res) => {
   }
 };
 
-
-// export const submitExam = async (req, res) => {
-//   try {
-//     const { examId } = req.params;
-//     const { answers } = req.body; // 📦 frontend is sending answers in body
-//     const studentId = req.user.id; // 📦 Assuming you're using some auth middleware
-
-//     const exam = await Exam.findById(examId);
-//     if (!exam) {
-//       return res.status(404).json({ message: "Exam not found" });
-//     }
-
-//     // 🧠 Logic to calculate score
-//     let score = 0;
-//     exam.questions.forEach((question, index) => {
-//       if (answers[index] && answers[index] === question.correctAnswer) {
-//         score+=question.marks;
-//       }
-//     });
-
-//     // ✍️ Save Result
-//     const result = new Result({
-//       student: studentId,
-//       exam: examId,
-//       answers,
-//       score,
-//     });
-
-//     await result.save();
-
-//     res.status(200).json({ message: "Exam submitted successfully!", result });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ message: "Server error during submission." });
-//   }
-// };
 export const submitExam = async (req, res) => {
   try {
     const { examId, answers, timeTaken } = req.body;
     const studentId = req.user.id;  // Assuming user is authenticated
 
     // If answers is an object, convert it to an array
-    const answersArray = Array.isArray(answers) 
-      ? answers 
+    const answersArray = Array.isArray(answers)
+      ? answers
       : Object.keys(answers).map(key => ({
-          questionIndex: Number(key), 
-          selectedOption: answers[key],
+        questionIndex: Number(key),
+        selectedOption: answers[key],
       }));
 
     // Find the exam by ID
@@ -171,3 +135,5 @@ export const submitExam = async (req, res) => {
     res.status(500).json({ message: "Error submitting exam" });
   }
 };
+
+

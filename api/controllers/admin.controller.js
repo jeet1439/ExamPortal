@@ -213,37 +213,111 @@ export const deleteQuestion = async (req, res) => {
 
 export const getExamsToPublish = async (req, res) => {
   try {
-    const userId = req.user; // Assuming you have authentication middleware which sets req.user
+    const userId = req.user; // The user's ObjectId from auth middleware
 
-    // Fetch only the exams created by the logged-in user
+    // Get all exams created by the user
     const exams = await Exam.find({ createdBy: userId });
 
-    const examsWithStudentCounts = await Promise.all(
+    // Filter exams where at least one student has submitted
+    const filteredExams = await Promise.all(
       exams.map(async (exam) => {
-        // Count the number of students who submitted this exam
         const studentCount = await Result.countDocuments({ exam: exam._id });
 
-        // Only return exams where more than 1 student submitted
         if (studentCount > 0) {
           return {
             _id: exam._id,
             title: exam.title,
             department: exam.department,
             year: exam.year,
-            studentCount: studentCount,
+            isPublished: exam.isPublished,
+            studentCount,
+            createdAt: exam.createdAt,
           };
-        } else {
-          return null;
         }
+        return null;
       })
     );
 
-    const filteredExams = examsWithStudentCounts.filter((exam) => exam !== null);
+    // Return only non-null exams
+    const validExams = filteredExams.filter(exam => exam !== null);
 
-    res.status(200).json(filteredExams);
+    res.status(200).json(validExams);
   } catch (error) {
-    console.error('Error fetching exams to publish:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error("Error in getExamsToPublish:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
+// Publish the Exam Results (Only if there are students who have taken the exam)
+export const publishExamResult = async (req, res) => {
+  const { examId } = req.params;
+
+  try {
+    // Find the exam by ID
+    const exam = await Exam.findById(examId);
+    if (!exam) {
+      return res.status(404).json({ message: 'Exam not found' });
+    }
+
+    // Fetch the number of students who have taken the exam
+    const numberOfStudents = await Result.countDocuments({ exam: examId });
+    
+    // Only publish if the number of students is greater than 0
+    if (numberOfStudents <= 0) {
+      return res.status(400).json({ message: 'Cannot publish results. No students have taken the exam yet.' });
+    }
+
+    // Set isPublished to true and save the exam
+    exam.isPublished = true;
+    await exam.save();
+
+    // Respond with updated exam data
+    res.status(200).json({
+      message: 'Exam results published successfully',
+      exam: {
+        _id: exam._id,
+        isPublished: exam.isPublished
+      }
+    });
+  } catch (error) {
+    console.error('Error publishing exam result:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Unpublish the Exam Results (Only if there are students who have taken the exam)
+export const unpublishExamResult = async (req, res) => {
+  const { examId } = req.params;
+
+  try {
+    // Find the exam by ID
+    const exam = await Exam.findById(examId);
+    if (!exam) {
+      return res.status(404).json({ message: 'Exam not found' });
+    }
+
+    // Fetch the number of students who have taken the exam
+    const numberOfStudents = await Result.countDocuments({ exam: examId });
+    
+    // Only unpublish if the number of students is greater than 0
+    if (numberOfStudents <= 0) {
+      return res.status(400).json({ message: 'Cannot unpublish results. No students have taken the exam yet.' });
+    }
+
+    // Set isPublished to false and save the exam
+    exam.isPublished = false;
+    await exam.save();
+
+    // Respond with updated exam data
+    res.status(200).json({
+      message: 'Exam results unpublished successfully',
+      exam: {
+        _id: exam._id,
+        isPublished: exam.isPublished
+      }
+    });
+  } catch (error) {
+    console.error('Error unpublishing exam result:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};

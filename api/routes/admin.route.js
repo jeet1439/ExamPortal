@@ -1,7 +1,7 @@
 import express from 'express';
 import multer from 'multer';
 const router = express.Router();
-import {getUnverifiedStudents,approveStudent,rejectStudent, getStudentByFilter, sendEmailToUser, addTeacher, addQuestionBank, getUserQuestionBanks, deleteQuestion, getExamsToPublish} from '../controllers/admin.controller.js';
+import {getUnverifiedStudents,approveStudent,rejectStudent, getStudentByFilter, sendEmailToUser, addTeacher, addQuestionBank, getUserQuestionBanks, deleteQuestion, publishExamResult, unpublishExamResult, getExamsToPublish} from '../controllers/admin.controller.js';
 import { createExam, deleteExam, getAllExam, markExamLiveAndUnlive } from '../controllers/examAdmin.controller.js';
 import { questionBankStorage } from '../cloud.config.js';
 import { verifyToken, verifyAdmin } from '../utils/verifyUser.js';
@@ -22,7 +22,9 @@ router.post("/exam/add-new", verifyAdmin, createExam);
 router.delete("/exam/deleteExam/:id", verifyToken, verifyAdmin, deleteExam);
 router.patch("/exam/liveExam/:id",verifyToken,verifyAdmin,markExamLiveAndUnlive);
 router.get("/exam/get-all", verifyToken, verifyAdmin , getAllExam);  
-router.get("/exams-to-publish",verifyToken,verifyAdmin,getExamsToPublish);
+router.get("/exam/publish-list",verifyToken,verifyAdmin,getExamsToPublish);
+router.patch("/:examId/publish",verifyToken,verifyAdmin,publishExamResult);
+router.patch("/:examId/unpublish",verifyToken,verifyAdmin,unpublishExamResult);
 
 //router for adding qB
 const upload = multer({ storage: questionBankStorage });
