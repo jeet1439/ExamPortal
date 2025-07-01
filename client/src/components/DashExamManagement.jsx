@@ -126,7 +126,7 @@ export default function CreateExam() {
 
   return (
     <div className="p-8 max-w-4xl mx-auto bg-white/20 backdrop-blur-lg rounded-2xl shadow-lg border border-gray-200">
-      <h2 className="text-3xl font-bold text-gray-800 text-center mb-6">📝 Create an Exam</h2>
+      <h2 className="text-3xl font-bold text-gray-800 text-center mb-6">Create an Exam</h2>
 
       <div className="space-y-6">
         <input className="w-full p-3 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400" placeholder="Exam Title"

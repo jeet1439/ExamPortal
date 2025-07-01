@@ -40,7 +40,7 @@ function ExamPage() {
 
   useEffect(() => {
     if (timeLeft === 0 && exam) {
-      alert("⏰ Time's up! Submitting your exam...");
+      alert("Time's up! Submitting your exam...");
       submitExam();
     }
   }, [timeLeft]);
@@ -53,7 +53,7 @@ function ExamPage() {
 
   const submitExam = async () => {
     if (!exam || !exam._id) {
-      console.error("❌ Cannot submit exam: Exam data is not available.");
+      console.error("Cannot submit exam: Exam data is not available.");
       return;
     }
 
@@ -72,14 +72,14 @@ function ExamPage() {
       });
 
       if (response.ok) {
-        alert("✅ Exam submitted successfully!");
+        alert("Exam submitted successfully!");
         window.location.href = "/student-dashboard";
       } else {
-        alert("❌ Failed to submit exam.");
+        alert("Failed to submit exam.");
       }
     } catch (error) {
       console.error("Error submitting exam:", error);
-      alert("❌ An error occurred during submission.");
+      alert("An error occurred during submission.");
     }
   };
 
@@ -106,7 +106,7 @@ function ExamPage() {
               <button
                 key={index}
                 onClick={() => setCurrentQuestionIndex(index)}
-                className={`w-full h-14 rounded-full text-sm font-medium transition-all
+                className={`h-12 rounded-sm text-sm font-medium transition-all
                   ${isCurrent
                     ? "bg-blue-600 text-white scale-105 shadow-lg"
                     : isMarked
@@ -122,15 +122,15 @@ function ExamPage() {
 
       {/* Main Content */}
       <div className="flex-1 p-8 overflow-y-auto">
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center mb-4">
           <h1 className="text-3xl font-bold text-gray-800">{exam.title}</h1>
           <span className="text-lg font-semibold text-red-600 bg-gray-200 px-4 py-2 rounded shadow-inner">
             ⏱ {formatTime(timeLeft)}
           </span>
         </div>
 
-        <div className="bg-white p-8 rounded-xl shadow-lg transition-all">
-          <h3 className="text-2xl font-semibold mb-4 text-blue-700">Question {currentQuestionIndex + 1}</h3>
+        <div className="bg-white p-6 rounded-md shadow-lg transition-all">
+          <h3 className="text-xl font-semibold mb-4 text-blue-700">Question {currentQuestionIndex + 1}</h3>
           <p className="mb-6 text-gray-800 leading-relaxed">{currentQuestion.question}</p>
 
           {currentQuestion.options && currentQuestion.options.map((option, idx) => (
@@ -160,22 +160,21 @@ function ExamPage() {
               disabled={currentQuestionIndex === 0}
               className="px-6 py-2 rounded bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium disabled:opacity-50"
             >
-              ⬅️ Previous
+              Previous
             </button>
 
             <button
               onClick={handleMarkAsRead}
-              className="px-6 py-2 bg-yellow-400 hover:bg-yellow-500 text-white font-bold rounded-full transition"
+              className="px-6 py-2 bg-yellow-400 hover:bg-yellow-500 text-white font-bold rounded-sm transition"
             >
-              ✅ Mark as Read
+              Mark as Read
             </button>
-
             <button
               onClick={() => setCurrentQuestionIndex((i) => Math.min(i + 1, exam.questions.length - 1))}
               disabled={currentQuestionIndex === exam.questions.length - 1}
               className="px-6 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 font-medium disabled:opacity-50"
             >
-              Save & Next ➡️
+              Save & Next
             </button>
           </div>
         </div>
@@ -189,12 +188,12 @@ function ExamPage() {
                 if (confirmSubmit) {
                   submitExam();
                 } else {
-                  alert("🔙 Back to exam panel.");
+                  alert("Back to exam panel.");
                 }
               }}
-              className="bg-green-600 hover:bg-green-700 text-white font-bold px-8 py-4 rounded-full shadow-md text-xl"
+              className="bg-green-600 hover:bg-green-700 text-white font-bold px-8 py-4 rounded-sm shadow-md text-xl"
             >
-              📝 Submit Exam
+              Submit Exam
             </button>
           </div>
         )}
